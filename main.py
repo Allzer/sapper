@@ -28,7 +28,7 @@ mapping = {
     neutralize: 9,
     boom: 10,
 }
-
+victory = 0
 # Загрузка Q-таблицы, если она существует
 try:
     Q_table = joblib.load("Q_table.pkl")
@@ -52,9 +52,9 @@ def choose_action(state, Q_table, epsilon):
 
 
 # Параметры обучения
-learning_rate = 0.08
+learning_rate = 0.09
 discount_factor = 0.9
-epsilon = 0.2  # Эпсилон-жадность для баланса исследования и эксплуатации
+epsilon = 0.95  # Эпсилон-жадность для баланса исследования и эксплуатации
 max_games = 1000  # Максимальное количество игр
 
 # Игровой цикл
@@ -70,13 +70,13 @@ while game_counter < max_games:
             cell_index = np.random.choice(
                 [i for i, val in enumerate(state) if val == 1])  # Выбор случайной непосещенной ячейки
             cell = driver.find_element(By.XPATH, f"//div[@id='board']//img[{cell_index + 1}]")
-            time.sleep(0.3)
+            time.sleep(0.15)
             cell.click()
         elif action == 1:  # Установка флажка
             cell_index = np.random.choice(
                 [i for i, val in enumerate(state) if val == 1])  # Выбор случайной непосещенной ячейки
             cell = driver.find_element(By.XPATH, f"//div[@id='board']//img[{cell_index + 1}]")
-            time.sleep(0.3)
+            time.sleep(0.15)
             right_click(cell)
 
         # Получение нового состояния поля
@@ -88,12 +88,17 @@ while game_counter < max_games:
                 if k in cell_style:
                     state_after.append(v)
 
-        if 9 in state_after:  # Если есть взорвавшаяся мина
-            reward = 0.3
-        elif state_after == [6] * len(state_after):  # Если все ячейки открыты
-            reward = 1
+        if 1 not in state_after:  # Если все ячейки открыты
+            reward = 10
+            victory += 1
+            print("ПОБЕДА!!!")
+
+        elif 9 in state_after:  # Если есть взорвавшаяся мина
+            reward = 1 * state_after.count(9)
+            print(f"Награда за обезвреженные мины: {reward}")
+
         elif 10 in state_after:
-            reward = -1
+            reward = -20
         else:
             reward = 0
         # print(reward)
