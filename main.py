@@ -1,4 +1,3 @@
-#Рабочий алгоритм
 import time
 import numpy as np
 from selenium import webdriver
@@ -55,48 +54,49 @@ def choose_action(state, Q_table, epsilon):
 # Параметры обучения
 learning_rate = 0.08
 discount_factor = 0.9
-epsilon = 0.4  # Эпсилон-жадность для баланса исследования и эксплуатации
-max_games = 100  # Максимальное количество игр
+epsilon = 0.2  # Эпсилон-жадность для баланса исследования и эксплуатации
+max_games = 1000  # Максимальное количество игр
 
 # Игровой цикл
 game_counter = 0
 while game_counter < max_games:
-    state = tuple([0] * len(mapping))  # Начальное состояние
+    state = tuple([1] * len(mapping))  # Начальное состояние
     # Игровой цикл
     while True:
-        print('Игровой цикл начался')
         # Выбор действия
         action = choose_action(state, Q_table, epsilon)
 
         if action == 0:  # Клик
             cell_index = np.random.choice(
-                [i for i, val in enumerate(state) if val == 0])  # Выбор случайной непосещенной ячейки
+                [i for i, val in enumerate(state) if val == 1])  # Выбор случайной непосещенной ячейки
             cell = driver.find_element(By.XPATH, f"//div[@id='board']//img[{cell_index + 1}]")
-            time.sleep(1)
+            time.sleep(0.3)
             cell.click()
         elif action == 1:  # Установка флажка
             cell_index = np.random.choice(
-                [i for i, val in enumerate(state) if val == 0])  # Выбор случайной непосещенной ячейки
+                [i for i, val in enumerate(state) if val == 1])  # Выбор случайной непосещенной ячейки
             cell = driver.find_element(By.XPATH, f"//div[@id='board']//img[{cell_index + 1}]")
-            time.sleep(1)
+            time.sleep(0.3)
             right_click(cell)
 
         # Получение нового состояния поля
         cells = driver.find_elements(By.XPATH, "//div[@id='board']//img[contains(@style, 'left')]")
-        state_after = list(state)
+        state_after = []
         for cell in cells:
             cell_style = cell.get_attribute("src")
             for k, v in mapping.items():
-                state_after.append(v)
-                cell.click()
+                if k in cell_style:
+                    state_after.append(v)
 
-        if 10 in state_after:  # Если есть взорвавшаяся мина
-            reward = -1
-        elif state_after == [6] * len(state_after) or 9 in state_after:  # Если все ячейки открыты
+        if 9 in state_after:  # Если есть взорвавшаяся мина
+            reward = 0.3
+        elif state_after == [6] * len(state_after):  # Если все ячейки открыты
             reward = 1
+        elif 10 in state_after:
+            reward = -1
         else:
             reward = 0
-
+        # print(reward)
         Q_table[tuple(state_after)] = Q_table.get(tuple(state_after), np.zeros(2))
         Q_table[tuple(state_after)][action] += learning_rate * (
                     reward + discount_factor * np.max(Q_table.get(tuple(state_after), np.zeros(2))) -
@@ -111,8 +111,9 @@ while game_counter < max_games:
     face = driver.find_element(By.XPATH, "//div[@id='playspace']//img[contains(@id, 'face')]")
     face.click()
 
-    print(Q_table)
     # Сохранение Q-таблицы после каждой игры
     joblib.dump(Q_table, "Q_table.pkl")
-    print("Q-таблица сохранена.")
+    # print("Q-таблица сохранена.")
     game_counter += 1  # Увеличение счетчика игр
+
+    print(f'Игра №{game_counter}')

@@ -70,13 +70,13 @@ while game_counter < max_games:
             cell_index = np.random.choice(
                 [i for i, val in enumerate(state) if val == 1])  # Выбор случайной непосещенной ячейки
             cell = driver.find_element(By.XPATH, f"//div[@id='board']//img[{cell_index + 1}]")
-            time.sleep(1)
+            time.sleep(0.5)
             cell.click()
         elif action == 1:  # Установка флажка
             cell_index = np.random.choice(
                 [i for i, val in enumerate(state) if val == 1])  # Выбор случайной непосещенной ячейки
             cell = driver.find_element(By.XPATH, f"//div[@id='board']//img[{cell_index + 1}]")
-            time.sleep(1)
+            time.sleep(0.5)
             right_click(cell)
 
         # Получение нового состояния поля
@@ -114,4 +114,4 @@ while game_counter < max_games:
     print("Q-таблица сохранена.")
     game_counter += 1  # Увеличение счетчика игр
 
-    print(game_counter)
+    print(f'Игра №{game_counter}')
