@@ -5,7 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import joblib
 
-from config import place, one, two, three, four, free, flag, mina, neutralize, boom
+from config import max_games, epsilon, learning_rate, discount_factor, mapping
+victory = 0
 
 # Опции веб-драйвера
 options = webdriver.ChromeOptions()
@@ -15,21 +16,6 @@ driver = webdriver.Chrome(options=options)
 # Открытие веб-страницы с игрой
 driver.get("https://сапёр.com/")
 
-# Словарь для соответствия значений на поле
-mapping = {
-    place: 1,
-    one: 2,
-    two: 3,
-    three: 4,
-    four: 5,
-    free: 6,
-    flag: 7,
-    mina: 8,
-    neutralize: 9,
-    boom: 10,
-}
-victory = 0
-# Загрузка Q-таблицы, если она существует
 try:
     Q_table = joblib.load("Q_table.pkl")
     print("Q-таблица загружена.")
@@ -51,11 +37,7 @@ def choose_action(state, Q_table, epsilon):
         return np.argmax(Q_table[state])  # Выбор действия с наибольшим значением в Q-таблице
 
 
-# Параметры обучения
-learning_rate = 0.09
-discount_factor = 0.9
-epsilon = 0.95  # Эпсилон-жадность для баланса исследования и эксплуатации
-max_games = 1000  # Максимальное количество игр
+
 
 # Игровой цикл
 game_counter = 0
@@ -88,23 +70,27 @@ while game_counter < max_games:
                 if k in cell_style:
                     state_after.append(v)
 
-        if 1 not in state_after:  # Если все ячейки открыты
+        if 1 not in state_after and 10 not in state_after:  # Если все ячейки открыты
             reward = 10
-            victory += 1
+            victory = open('Победа.txt','w')
+            victory.write(f'{time.time()}')
             print("ПОБЕДА!!!")
 
+        elif 7 in state_after and 10 in state_after:
+            reward = -0.5 * state_after.count(7)
+            print("Лишний флаг")
+
         elif 9 in state_after:  # Если есть взорвавшаяся мина
-            reward = 1 * state_after.count(9)
+            reward = 0.2 * state_after.count(9)
             print(f"Награда за обезвреженные мины: {reward}")
 
         elif 10 in state_after:
-            reward = -20
+            reward = -5
+
         else:
             reward = 0
-        # print(reward)
         Q_table[tuple(state_after)] = Q_table.get(tuple(state_after), np.zeros(2))
-        Q_table[tuple(state_after)][action] += learning_rate * (
-                    reward + discount_factor * np.max(Q_table.get(tuple(state_after), np.zeros(2))) -
+        Q_table[tuple(state_after)][action] += learning_rate * (reward + discount_factor * np.max(Q_table.get(tuple(state_after), np.zeros(2))) -
                     Q_table[tuple(state_after)][action])
 
         if reward != 0 or 10 in state_after:

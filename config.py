@@ -10,6 +10,20 @@ neutralize = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJS
 boom = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEX/AAAAAAB7e3v///9Ql2ugAAAANElEQVQI12NYBQQMDQxA0MDgACNcQxwYGkRDgaz4UAcI0RoaGsLQEApkAQmwLEQdQhvYFAAmDxJuxV7pRgAAAABJRU5ErkJggg=="
 face = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaBAMAAABbZFH9AAAAD1BMVEW9vb17e3v//wD///8AAABXk1meAAAAaUlEQVQY043PwQnAMAgFUAMZIJINxAECXSCI+89UE2wVmkM/Xh6R4AdMadCvSMkaCH3Ak3JUVQ1VIdJXQpbpqrTCLmEmm+kiWxVXtYc9rp1/YlVX/OniteeKW753Rofod+xeMAINs0rWDW08IHwPjv9jAAAAAElFTkSuQmCC"
 
+learning_rate = 0.1
+discount_factor = 0.8
+epsilon = 1  # Эпсилон-жадность для баланса исследования и эксплуатации
+max_games = 200
 
-
-
+mapping = {
+    place: 1,
+    one: 2,
+    two: 3,
+    three: 4,
+    four: 5,
+    free: 6,
+    flag: 7,
+    mina: 8,
+    neutralize: 9,
+    boom: 10,
+}
