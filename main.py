@@ -42,7 +42,7 @@ def choose_action(state, Q_table, epsilon):
 # Игровой цикл
 game_counter = 0
 while game_counter < max_games:
-    state = tuple([1] * len(mapping))  # Начальное состояние
+    state = tuple([1] * 81)  # Начальное состояние
     # Игровой цикл
     while True:
         # Выбор действия
