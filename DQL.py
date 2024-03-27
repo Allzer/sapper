@@ -124,5 +124,5 @@ while game_counter < max_games:
     # Обновление счетчика игр
     game_counter += 1
     print(f'Игра №{game_counter}')
-print(f'Победа {win}')
+print(f'Побед {win}')
 
