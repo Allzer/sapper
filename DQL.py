@@ -83,7 +83,7 @@ while game_counter < max_games:
         # Ваш текущий код для обработки награды и обновления Q-таблицы
 
         if 1 not in state_after and 10 not in state_after:  # Если все ячейки открыты
-            reward = 20
+            reward = 30
             print("ПОБЕДА!!!")
             f = open('ПОБЕДА.txt','w')
             win += 1

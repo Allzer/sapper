@@ -14,7 +14,7 @@ five = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACV
 learning_rate = 0.01
 discount_factor = 0.8
 epsilon = 1  # Эпсилон-жадность для баланса исследования и эксплуатации
-max_games = 300
+max_games = 200
 
 mapping = {
     place: 1,
