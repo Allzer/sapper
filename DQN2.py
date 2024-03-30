@@ -21,14 +21,18 @@ driver.get("https://сапёр.com/")
 
 win = 0
 
-if os.path.exists("model.keras"):
-    model = load_model("model.keras")
+if os.path.exists("model2.keras"):
+    model = load_model("model2.keras")
     print("Модель загружена.")
 else:
     print("Модель не найдена. Создается новая модель.")
     model = Sequential([
-        Dense(64, activation='relu', input_shape=(81,)),
-        Dense(32, activation='relu'),
+        Dense(81, activation='relu', input_shape=(81,)),
+        Dense(70, activation='relu'),
+        Dense(63, activation='relu'),
+        Dense(31, activation='relu'),
+        Dense(25, activation='relu'),
+        Dense(10, activation='relu'),
         Dense(2, activation='relu')
     ])
     model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error')
@@ -120,7 +124,7 @@ while game_counter < max_games:
     # Перезапуск игры
     face = driver.find_element(By.XPATH, "//div[@id='playspace']//img[contains(@id, 'face')]")
     face.click()
-    model.save('model.keras')
+    model.save('model2.keras')
     print('Модель сохранена')
     # Обновление счетчика игр
     game_counter += 1
