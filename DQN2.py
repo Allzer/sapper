@@ -32,7 +32,7 @@ else:
         Dense(63, activation='relu'),
         Dense(31, activation='relu'),
         Dense(25, activation='relu'),
-        Dense(10, activation='relu'),
+        Dense(12, activation='relu'),
         Dense(2, activation='relu')
     ])
     model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mean_squared_error')
